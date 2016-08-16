@@ -48,7 +48,7 @@
 #include "target/i8254.h"
 #include "target/isapnpreg.h"
 
-#include "loongson3_def.h"
+#include "loongson3firewall_def.h"
 /*
  *   Register usage:
  *
@@ -369,8 +369,7 @@ gs_2f_v3_ddr2_cfg:
 
 //#define DDR_LOOPC  80 //667Mhz
 //#define DDR_LOOPC  72 //600
-//#define DDR_LOOPC  60 //500MHz
-#define DDR_LOOPC  48 //400MHz
+#define DDR_LOOPC  80//60 //500MHz
 #define DDR_REFC   1
 #define DDR_DIV    4
 
