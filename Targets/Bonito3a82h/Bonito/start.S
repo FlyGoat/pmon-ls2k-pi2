@@ -365,19 +365,20 @@ gs_2f_v3_ddr2_cfg:
 //#define DDR_LOOPC  48 //400MHz
 //#define DDR_LOOPC  28 //466MHz
 //#define DDR_LOOPC  60 //500MHz
-#define DDR_LOOPC  64 //533MHz
-//#define DDR_LOOPC  34 //566MHz
+//#define DDR_LOOPC  64 //533MHz
+//#define DDR_LOOPC  68 //566MHz
 //#define DDR_LOOPC  72 //600MHz
 //#define DDR_LOOPC  38 //633MHz
 #define DDR_REFC   1
-//#define DDR_DIV    8
-#define DDR_DIV    4
+#define DDR_DIV    8
+//#define DDR_DIV    4
+#define DDR_LOOPC    333333333/10*DDR_DIV/3333333
 
 //#define L1_LOOPC    68//850
-#define L1_LOOPC    64//800
-//#define L1_LOOPC    48//600
-#define L1_DIV      2
-#define FREQ 	800
+//#define L1_LOOPC    64//800
+#define L1_DIV      2//4//2
+#define L1_LOOPC    500000000/10*L1_DIV/3333333
+
 
 #define PLL_CHANG_COMMIT 0x1
 
@@ -576,7 +577,11 @@ after_ht:
 #ifdef  AUTO_DDR_CONFIG
         dli     s1, 0x36170000  //set use MC1 or MC0 or MC1/0 and give All device id
 #else
-	dli     s1, 0xc2e30400c2e30400
+//	dli     s1, 0xc3e30200c3e30204
+//	dli     s1, 0xc0a18400c0a18400 
+	//dli     s1, 0xc1a18400c1a18400 
+	//dli     s1, 0xc1a18400c1a18400 
+	dli     s1, 0x00000000c1a18400 
 #endif
 #include "ddr_dir/loongson3_ddr2_config.S"
 //#include "ddr_dir/loongson3a2h_ddr_config.S"
@@ -825,6 +830,7 @@ after_ht:
 bootnow:
 	bal	spd_info_store
 	nop
+//#include "ls3a2000-zd-ddr.S"
 		
 	TTYDBG("Copy PMON to execute location...\r\n")
 	la	a0, start
