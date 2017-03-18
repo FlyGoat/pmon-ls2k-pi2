@@ -49,7 +49,7 @@
 #include "target/isapnpreg.h"
 #include "target/ls2h.h"
 
-#include "loongson3_def.h"
+#include "loongson3firewall_def.h"
 /*
  *   Register usage:
  *
@@ -370,14 +370,14 @@ gs_2f_v3_ddr2_cfg:
 //#define DDR_LOOPC  72 //600MHz
 //#define DDR_LOOPC  38 //633MHz
 #define DDR_REFC   1
-#define DDR_DIV    8
-//#define DDR_DIV    4
+//#define DDR_DIV    8
+#define DDR_DIV    4
 #define DDR_LOOPC    333333333/10*DDR_DIV/3333333
 
 //#define L1_LOOPC    68//850
 //#define L1_LOOPC    64//800
 #define L1_DIV      2//4//2
-#define L1_LOOPC    500000000/10*L1_DIV/3333333
+#define L1_LOOPC    800000000/10*L1_DIV/2500000
 
 
 #define PLL_CHANG_COMMIT 0x1
@@ -581,7 +581,9 @@ after_ht:
 //	dli     s1, 0xc0a18400c0a18400 
 	//dli     s1, 0xc1a18400c1a18400 
 	//dli     s1, 0xc1a18400c1a18400 
-	dli     s1, 0x00000000c1a18400 
+	//dli     s1, 0x00000000c1a18400 
+	//dli     s1, 0x00000000c1a18204 
+	dli	s1, 0xc1a18404c1a18404
 #endif
 #include "ddr_dir/loongson3_ddr2_config.S"
 //#include "ddr_dir/loongson3a2h_ddr_config.S"
@@ -828,8 +830,10 @@ after_ht:
 ##########################################
 
 bootnow:
+#ifdef AUTO_DDR_CONFIG
 	bal	spd_info_store
 	nop
+#endif
 //#include "ls3a2000-zd-ddr.S"
 		
 	TTYDBG("Copy PMON to execute location...\r\n")
