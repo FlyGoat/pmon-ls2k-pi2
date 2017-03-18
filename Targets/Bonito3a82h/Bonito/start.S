@@ -358,26 +358,20 @@ gs_2f_v3_ddr2_cfg:
 
 #define SOFT_CLKSEL
 #ifdef SOFT_CLKSEL
+#ifdef BONITO_25M
+#define DDRPLL_IN 25000000
+#else
+#define DDRPLL_IN 33333333
+#endif
 
-//#define DDR_LOOPC    64 //264MHz
-//#define DDR_LOOPC    72 //300MHz
-//#define DDR_LOOPC    80 //330MHz
-//#define DDR_LOOPC  48 //400MHz
-//#define DDR_LOOPC  28 //466MHz
-//#define DDR_LOOPC  60 //500MHz
-//#define DDR_LOOPC  64 //533MHz
-//#define DDR_LOOPC  68 //566MHz
-//#define DDR_LOOPC  72 //600MHz
-//#define DDR_LOOPC  38 //633MHz
+#define CPUPLL_IN 25000000
+
 #define DDR_REFC   1
-//#define DDR_DIV    8
 #define DDR_DIV    4
-#define DDR_LOOPC    333333333/10*DDR_DIV/3333333
+#define DDR_LOOPC    333333333/10*DDR_DIV/(DDRPLL_IN/10)
 
-//#define L1_LOOPC    68//850
-//#define L1_LOOPC    64//800
 #define L1_DIV      2//4//2
-#define L1_LOOPC    800000000/10*L1_DIV/2500000
+#define L1_LOOPC    800000000/10*L1_DIV/(CPUPLL_IN/10)
 
 
 #define PLL_CHANG_COMMIT 0x1
