@@ -387,26 +387,21 @@ gs_2f_v3_ddr2_cfg:
 
 #define SOFT_CLKSEL
 #ifdef SOFT_CLKSEL
+#ifdef BONITO_25M
+#define DDRPLL_IN 25000000
+#else
+#define DDRPLL_IN 33333333
+#endif
 
-//#define DDR_LOOPC	 48//200MHz
-//#define DDR_LOOPC	 72//300MHz
-//#define DDR_LOOPC  96 //400MHz
-//#define DDR_LOOPC  28 //466MHz
-//#define DDR_LOOPC  60 //500MHz
-#define DDR_LOOPC  64 //533MHz
-//#define DDR_LOOPC  34 //566MHz
-//#define DDR_LOOPC  72 //600MHz
-//#define DDR_LOOPC  76 //633MHz
-//#define DDR_LOOPC  80 //667MHz
+#define CPUPLL_IN 25000000
+
 #define DDR_REFC   1
 #define DDR_DIV    4
+#define DDR_LOOPC    300000000/10*DDR_DIV/(DDRPLL_IN/10)
 
 // L1_* define both CPU and Node freq simutanleously
-#define L1_LOOPC    80//1000@25MHz
-//#define L1_LOOPC    64//800@25MHz
-//#define L1_LOOPC    49//808@33MHz
-//#define L1_LOOPC    48//600
 #define L1_DIV      2
+#define L1_LOOPC    800000000/10*L1_DIV/(CPUPLL_IN/10)
 
 #define BYPASS_CORE 0x0
 #define BYPASS_NODE 0x0
@@ -693,11 +688,11 @@ no_reboot:
 #define AUTO_ARB_LEVEL
 #endif
 #ifdef  AUTO_ARB_LEVEL
-#define CHECK_ARB_LEVEL_FREQ
+//#define CHECK_ARB_LEVEL_FREQ
 #ifdef  AUTO_DDR_CONFIG
 #define CHECK_ARB_LEVEL_DIMM
 #endif
-//#define DEBUG_AUTO_ARB_LEVEL
+#define DEBUG_AUTO_ARB_LEVEL
 #endif
 //#define DISABLE_DDR_A15
 //#define DEBUG_DDR
@@ -2059,7 +2054,7 @@ idle1000:
 #include "ddr_dir/loongson3C_ddr3_leveling.S"
 #endif
 #ifdef ARB_LEVEL
-#include "ddr_dir/ARB_level_new.S"
+//#include "ddr_dir/ARB_level_new.S"
 #endif
 #ifdef  DEBUG_DDR
 #include "ddr_dir/Test_Mem.S"
@@ -2091,3 +2086,18 @@ nvram_offs:
     .align  5
 #include "loongson_mc2_param.S"
 
+#ifdef  ARB_LEVEL
+	.text
+	.global c0_mc0_level_info 
+	.global c0_mc1_level_info 
+#ifdef  MULTI_CHIP
+	.global c1_mc0_level_info 
+	.global c1_mc1_level_info 
+#endif
+
+#include "ddr_dir/loongson3A3_ddr_param.lvled.S"
+#ifdef  MULTI_CHIP
+#include "ddr_dir/loongson3A3_ddr_param_c1.lvled.S"
+#endif
+
+#endif
