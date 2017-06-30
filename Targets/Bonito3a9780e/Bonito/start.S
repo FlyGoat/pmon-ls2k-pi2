@@ -48,7 +48,7 @@
 #include "target/i8254.h"
 #include "target/isapnpreg.h"
 
-#include "loongson3_def.h"
+#include "loongson3firewall_def.h"
 /*
  *   Register usage:
  *
@@ -393,12 +393,21 @@ gs_2f_v3_ddr2_cfg:
 
 #define SOFT_CLKSEL
 #ifdef SOFT_CLKSEL
+#ifdef BONITO_25M
+#define DDRPLL_IN 25000000
+#else
+#define DDRPLL_IN 33333333
+#endif
 
 //#define DDR_LOOPC  24 //600MHz
 #define DDR_LOOPC  30 //500MHz
 #define DDR_REFC    2
 //#define DDR_DIV     8
 #define DDR_DIV     6
+
+//#define DDR_LOOPC  40//30 //500MHz
+
+#define DDR_LOOPC 500000000/10*DDR_DIV/(DDRPLL_IN/10)/(DDR_REFC+1)
 
 // L1_* define both CPU and Node freq simutanleously
 //#define USE_LS_PLL 1
@@ -418,11 +427,13 @@ gs_2f_v3_ddr2_cfg:
 //#define L1_LOOPC   256//800
 //#define L1_LOOPC   32//400
 //#define L1_LOOPC    48//600
-#define L1_LOOPC    48//600
+//#define L1_LOOPC    48//600
 //#define L1_LOOPC    40//500
 #define L1_DIV      2
 //#define L1_DIV      2
 #define L1_REFC   1
+#define CPUPLL_IN 100000000
+
 
 #elsif REF_33M
 
@@ -435,6 +446,7 @@ gs_2f_v3_ddr2_cfg:
 #define L1_DIV      8
 //#define L1_DIV      2
 #define L1_REFC   1
+#define CPUPLL_IN 33000000
 
 #else //REF_25M
 
@@ -447,14 +459,16 @@ gs_2f_v3_ddr2_cfg:
 //#define L1_LOOPC   108//1350
 //#define L1_LOOPC   104//1300
 //#define L1_LOOPC   100//1250
-#define L1_LOOPC   192//1200
+//#define L1_LOOPC   192//1200
 //#define L1_LOOPC   184//1150
 //#define L1_LOOPC   160//1000
 #define L1_DIV      4
 //#define L1_DIV      2
 #define L1_REFC   1
+#define CPUPLL_IN 25000000
 #endif
-#define 	FREQ 1200
+
+#define L1_LOOPC    1400000000/10*L1_DIV/(CPUPLL_IN/10)
 
 #define BYPASS_CORE 0x0
 #define BYPASS_NODE 0x0
@@ -711,7 +725,9 @@ soft_out:
     dli     s1, 0x32100000  //set use MC1 or MC0 or MC1/0 and give All device id
 #else
 //	dli     s1, 0xc2e30400c2e30404
-	dli     s1, 0xc2ec0400
+	//dli     s1, 0xc2ec0400
+	//dli	s1, 0xc0a10204c0a10204
+        dli     s1,0xc1a10400c1a10400
 #endif
 #include "ddr_dir/loongson3A2000_ddr2_config.S"
 
