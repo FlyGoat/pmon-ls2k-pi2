@@ -468,7 +468,7 @@ gs_2f_v3_ddr2_cfg:
 #define CPUPLL_IN 25000000
 #endif
 
-#define L1_LOOPC    1400000000/10*L1_DIV/(CPUPLL_IN/10)
+#define L1_LOOPC    1500000000/10*L1_DIV/(CPUPLL_IN/10)
 
 #define BYPASS_CORE 0x0
 #define BYPASS_NODE 0x0
