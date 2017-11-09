@@ -53,6 +53,9 @@
 #include "mod_usb_storage.h"
 #include "loopdev.h"
 #include "atp.h"
+#ifdef LOONGSON_2K
+#include "sdcard.h"
+#endif
 
 extern int errno;
 
@@ -161,6 +164,9 @@ struct devsw devswitch[] = {
 #endif
 #if NATP > 0
         { "sata", atp_open, atp_read, atp_write, atp_close},
+#endif
+#if NSDCARD > 0
+	{ "sdcard", loopdevopen, loopdevread, loopdevwrite, loopdevclose},
 #endif
 	/* Add any target specific devices. See "pmon_target.h" */
 #if defined(TGT_DEV_SWITCH)
@@ -625,6 +631,34 @@ find_device(name)
 	return NULL;
 }
 
+struct device *get_device(dev_t dev)
+{
+	extern struct devsw devswitch[];
+	struct cfdata *cf;
+	struct cfdriver *cd;
+	struct device *dv;
+	int i;
+	int major,minor;
+	struct devsw *devsw;
+
+	major = dev>>8;
+	minor =dev & 0xff;
+	devsw = &devswitch[major];
+
+	for(cf = cfdata; (cd = cf->cf_driver); cf++) {
+		if(cd->cd_devs == NULL)
+			continue;
+
+		if(strcmp(devsw->name,cd->cd_name))
+			continue;
+
+		if((dv = cd->cd_devs[minor]) == NULL)
+			continue;
+
+		return dv;
+	}
+	return NULL;
+}
 
 /*
  *  File system registration info.
