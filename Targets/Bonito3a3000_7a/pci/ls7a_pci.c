@@ -11,7 +11,7 @@ typedef unsigned long device_t;
 #define HT_CONF_TYPE0_ADDR 0x90000efdfe000000
 #define HT_MAP_TYPE0_CONF_ADDR  BONITO_PCICFG0_BASE_VA
 
-typedef unsigned long long u64;
+//typedef unsigned long long u64;
 u32 pci_read_type0_config32(u32 dev, u32 func, u32 reg){
 	u32 data;
 	//u64 addr = HT_CONF_TYPE0_ADDR;
