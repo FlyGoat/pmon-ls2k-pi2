@@ -3,12 +3,14 @@
 #include <stdio.h>
 #include <sys/malloc.h>
 #include <machine/pio.h>
+#include <sys/device.h>
 #include <target/ls2k.h>
+#include <dev/pci/pcireg.h>
+#include <dev/pci/pcivar.h>
+#include <dev/pci/pcidevs.h>
+#include <pmon/dev/pcibrvar.h>
 
 #define DC_FB0 1	//mtf modify
-
-#define FB_XSIZE 1280
-#define FB_YSIZE 1024
 
 #define DIS_WIDTH  FB_XSIZE
 #define DIS_HEIGHT FB_YSIZE
@@ -231,7 +233,7 @@ int dc_init()
 	val = pci_read_type0_config32(6, 0, 16);
 
 	val &= 0xffff0000;
-	val |= 0x80000000;
+	val |= _pci_bus[0]->pa.pa_memt->bus_base;
 	printf("val %x\n", val);
 	config_fb(val + DC0_BASE_ADDR_OFF);	//for dvo_0 1240
 	config_fb(val + DC1_BASE_ADDR_OFF);	//for dvo_1 1250
