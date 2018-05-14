@@ -1811,7 +1811,7 @@ struct pci_config_data pci_config_array[] = {
 {},
 };
 
-typedef unsigned long long u64;
+//typedef unsigned long long u64;
 u64  __raw__readq(u64 addr);
 u64 __raw__writeq(u64 addr, u64 val);
 void ls_pcie_config_set(void)
