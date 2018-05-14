@@ -17,7 +17,7 @@ ATTENTION:
 #if 1
 /* MEM @ 500Mhz */
 /* GPU @ 400Mhz */
-#define DDR_LOOPC  80
+//#define DDR_LOOPC  80
 #define DDR_REFC   4
 #define DDR_DIV    1
 #define DDR_DIV_L2    4
@@ -33,6 +33,8 @@ ATTENTION:
 #define DDR_DIV_L2    4
 #define GPU_DIV_L2    5
 #endif
+#define PLL_IN 100000000
+#define DDR_LOOPC 400000000/10*DDR_DIV*DDR_REFC*DDR_DIV_L2/(PLL_IN/10)
 #if 0
 /* CPU @ 1000Mhz */
 #define L1_LOOPC    80
@@ -47,6 +49,9 @@ ATTENTION:
 #define L1_DIV      1
 #define L2_DIV      2
 #endif
+
+#define L1_LOOPC 1000000000/10*L1_DIV*L1_REFC*L2_DIV/(PLL_IN/10)
+
 /* DC @ 200Mhz */
 /* GMAC @ 125Mhz */
 #define DC_LOOPC    80
