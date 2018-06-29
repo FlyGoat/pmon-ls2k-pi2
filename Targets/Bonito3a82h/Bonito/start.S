@@ -49,7 +49,7 @@
 #include "target/isapnpreg.h"
 #include "target/ls2h.h"
 
-#include "loongson3firewall_def.h"
+#include "loongson3_def.h"
 /*
  *   Register usage:
  *
@@ -368,7 +368,7 @@ gs_2f_v3_ddr2_cfg:
 
 #define DDR_REFC   1
 #define DDR_DIV    4
-#define DDR_LOOPC    400000000/10*DDR_DIV/(DDRPLL_IN/10)
+#define DDR_LOOPC   233000000/10*DDR_DIV/(DDRPLL_IN/10)
 
 #define L1_DIV      2//4//2
 #define L1_LOOPC    800000000/10*L1_DIV/(CPUPLL_IN/10)
@@ -581,7 +581,7 @@ after_ht:
 	//dli	s1, 0xc0a18404
 	dli	s1, 0xc0a18800c0a18800
 #endif
-#include "ddr_dir/loongson3_ddr2_config.S"
+#include "loongson3_ddr2_config.S"
 //#include "ddr_dir/loongson3a2h_ddr_config.S"
 
 	TTYDBG("Init Memory done.\r\n")
