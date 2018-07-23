@@ -785,7 +785,7 @@ start_now:
 //#define DEBUG_AUTO_ARB_LEVEL
 #endif
 //#define  DISABLE_DDR_A15
-//#define DEBUG_DDR
+#define DEBUG_DDR
 //#define DEBUG_DDR_PARAM
 //#define PRINT_DDR_LEVELING
 //#define DLL_DELAY_LOOP
@@ -911,6 +911,7 @@ start_now:
 
 ##########################################
 #ifdef  DEBUG_DDR
+#ifdef DEBUG_DDR_PARAM
 	PRINTSTR("\r\nDo test?(0xf: skip): ")
 	bal     inputaddress
 	nop
@@ -918,7 +919,9 @@ start_now:
 	dli     a1, 0x1
 	bgt     v0, a1, 2f
 	nop
+#endif
 	dli     s1, 0x0010000080000000
+#ifdef DEBUG_DDR_PARAM
 	PRINTSTR("\r\ndefault s1 = 0x");
 	dsrl    a0, s1, 32
 	bal     hexserial
@@ -934,6 +937,7 @@ start_now:
 	nop
 	move    s1, v0
 1:
+#endif
 	dli     t1, 0x0010
 	bal     test_mem
 	nop
