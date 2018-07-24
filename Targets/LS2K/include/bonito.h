@@ -53,7 +53,7 @@ extern char           *heaptop;
 /*********************************************************************/
 #ifdef NVRAM_IN_FLASH
 #	define	NVRAM_SIZE		492    /*modified by tangyt*/
-#	define	NVRAM_SECSIZE		500
+#	define	NVRAM_SECSIZE		512
 #       define  ACTIVECOM_OFFS      492 /*added by tangyt*/
 #       define  MASTER_BRIDGE_OFFS      493 /*added by tangyt*/
 #ifdef BOOT_FROM_NAND
@@ -62,6 +62,7 @@ extern char           *heaptop;
 #	define	NVRAM_OFFS		0x000ff000
 #endif
 #	define ETHER_OFFS		494 	/* Ethernet address base */
+#	define VER_OFFS		500 	/* Ethernet address base */
 #else	/* Use clock ram, 256 bytes only */
 #	define NVRAM_SIZE		114
 #	define NVRAM_SECSIZE		NVRAM_SIZE	/* Helper */
