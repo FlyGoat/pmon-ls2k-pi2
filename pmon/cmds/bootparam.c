@@ -15,7 +15,11 @@ struct interface_info g_interface = { 0 };
 struct interface_info g_board = { 0 };
 struct loongson_special_attribute g_special = { 0 };
 #ifdef LS7A
+#ifndef VBIOS_IN_ROM
 unsigned char readspi_result[128 * 1024] = {0};
+#else
+#include "Targets/Bonito3a3000_7a/Bonito/7aVbios.h"
+#endif
 #endif
 
 extern void poweroff_kernel(void);
@@ -76,12 +80,16 @@ void init_smbios(struct smbios_tables *smbios)
   smbios->vga_bios = 0;
 #elif defined LS7A
   if(!pcie_dev){
+#ifndef VBIOS_IN_ROM
 	  extern unsigned char * ls7a_spi_read_vgabios();
 	  ls7a_spi_read_vgabios(readspi_result);
 	  if(!ls7a_vgabios_crc_check(readspi_result))
 		  smbios->vga_bios = readspi_result;
 	  else
 	      smbios->vga_bios = 0;
+#else
+	      smbios->vga_bios = Vbios;
+#endif
   }
   else
 	      smbios->vga_bios = 0;
