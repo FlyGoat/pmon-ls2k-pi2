@@ -190,3 +190,27 @@ nop
 #define NODE_SCACHE_ENABLED         0x6666
 #define SYSTEM_INIT_OK              0x5a5a
 
+#ifdef LS3A7A_WDT_GPIO13E_GPIO14F
+/*gpio 14 feed, gpio 13 enable wdt*/
+#undef WatchDog_Enable
+#undef WatchDog_Close
+#define WatchDog_Enable \
+GPIO_SET_OUTPUT(0x1<<14); \
+li v1,0x100;\
+78:; \
+subu v1,1; \
+bnez v1,78b; \
+nop; \
+GPIO_CLEAR_OUTPUT(0x1<<14); \
+GPIO_CLEAR_OUTPUT(0x1<<13);
+
+#define WatchDog_Close \
+GPIO_SET_OUTPUT(0x1<<14); \
+li v1,0x100;\
+78:; \
+subu v1,1; \
+bnez v1,78b; \
+nop; \
+GPIO_CLEAR_OUTPUT(0x1<<14); \
+GPIO_CLEAR_OUTPUT(0x1<<13);
+#endif
