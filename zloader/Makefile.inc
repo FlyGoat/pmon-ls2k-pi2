@@ -145,17 +145,18 @@ endif
 dtb:
 	./dtc -I dts -O dtb -o ${TARGETEL}.dtb ../Targets/${TARGET}/conf/${TARGETEL}.dts
 	[ -f gzrom.bin ] && cp gzrom.bin gzrom-dtb.bin && python ../tools/pmonenv.py -f gzrom-dtb.bin -d ls2k.dtb -w  al=\(usb0,0\)/boot/vmlinuz al1=\(wd0,0\)/boot/vmlinuz append="'console=ttyS0,115200 console=tty initcall_debug=1 loglevel=20'" FR=1
-cleanall: clean
+
+cleanall: cleanzloader
+	rm -rf ../Targets/*/compile
 	rm -rf ../lib/libc/Makefile ../lib/libm/Makefile ../lib/libz/Makefile ../lib/libc/Makefile.bak ../lib/libm/Makefile.bak ../lib/libz/Makefile.bak
+clean: cleanzloader
 	make -C ../Targets/${TARGET}/compile/${TARGETEL}/ clean
-clean:
+cleanzloader:
 	rm -rf *.o zlib_gzip zloader pmon.bin.c gzrom* gzram* *.dtb initmips.c pmon.bin.gz zlib_deflate/*.o zlib_inflate/*.o zlib_gzrom zlib_gzrom.bin
-cfg:
-	rm -rf ../lib/libc/Makefile
+
+cfg: cleanall
 	cp ../lib/libc/Makefile.meta ../lib/libc/Makefile
-	rm -rf ../lib/libm/Makefile
 	cp ../lib/libm/Makefile.meta ../lib/libm/Makefile
-	rm -rf ../lib/libz/Makefile
 	cp ../lib/libz/Makefile.meta ../lib/libz/Makefile
 	mkdir -p ../Targets/${TARGET}/compile
 	cd ../Targets/${TARGET}/conf/;pmoncfg ${TARGETEL}

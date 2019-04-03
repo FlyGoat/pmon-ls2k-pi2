@@ -44,4 +44,4 @@ pmonlibs:
 	@cd lib; ${MAKE}
 
 clean:
-	@cd zloader; make allclean
+	@cd zloader; make cleanall
