@@ -51,12 +51,12 @@
 		 * If you want to use the "hda" function,enable the "hda"
 		 * controller by configure general configuration register 0.
 		 */
-		/*hda@0x400d0000 {
+		hda@0x400d0000 {
 			compatible = "loongson,ls-audio";
 			reg = <0x400d0000 0xffff>;
 			interrupt-parent = <&icu>;
 			interrupts = <12>;
-		};*/
+		};
 
 		dc@0x400c0000 {
 			compatible = "loongson,ls-fb";
@@ -322,11 +322,12 @@
 			interrupts = <30>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			eeprom@57{
-				compatible = "atmel,24c16";
-				reg = <0x57>;
-				pagesize = <16>;
+
+				touchscreen@14{
+				compatible = "loongson,Goodix-TS";
+				reg = <0x14>;
 			};
+
 		};
 		i2c1: i2c@1fe01800{
 			#address-cells = <1>;
@@ -344,34 +345,24 @@
 				compatible = "codec_uda1342";
 				reg = <0x1a>;
 			};
-
-		};
-
-		i2c_dvo0:i2c@2{
-			compatible = "i2c-gpio";
-			gpios = <&pioA 1 0 /* sda */
-				 &pioA 0 0 /* scl */
-				>;
-			/*i2c-gpio,sda-open-drain;*/
-			/*i2c-gpio,scl-open-drain;*/
-			i2c-gpio,delay-us = <5>;	/* ~100 kHz */
-			#address-cells = <1>;
-			#size-cells = <0>;
 			eeprom@50{
-				compatible = "dvi-eeprom-edid";
+				compatible = "eeprom-edid";
 				reg = <0x50>;
 			};
+
+
 		};
 
-		i2c_dvo1:i2c@3{
+
+/*		i2c_dvo1:i2c@3{
 			compatible = "i2c-gpio";
-			gpios = <&pioA 32 0 /* sda */
-				 &pioA 33 0 /* scl */
-				>;
+			gpios = <&pioA 32 0 
+				 &pioA 33 0 
+				>;*/
 			/*i2c-gpio,sda-open-drain;*/
 			/*i2c-gpio,scl-open-drain;*/
-			i2c-gpio,delay-us = <5>;	/* ~100 kHz */
-			eeprom@50{
+/*			i2c-gpio,delay-us = <5>;*/	/* ~100 kHz */
+/*			eeprom@50{
 				compatible = "eeprom-edid";
 				reg = <0x50>;
 			};
@@ -380,6 +371,7 @@
 				reg = <0x1a>;
 			};
 		};
+*/
 
 		spi0: spi@1fff0220{
 			compatible = "loongson,ls-spi";
@@ -542,29 +534,7 @@
 			dma-names = "sdio_rw";
 			dma-mask = <0xffffffff 0xffffffff>;
 		};
-		i2s: i2s@0x1fe0d000 {
-			compatible = "loongson,ls-i2s";
-			reg = <0x1fe0d000 0x10>;
-		};
-		audio: audio@0x1fe0d000 {
-			compatible = "loongson,ls-pcm-audio";
-			reg = <0x1fe0d000 0x10>;
-			interrupt-parent = <&icu>;
-			interrupts = <54 55>;
-			interrupt-names = "i2s_irq0", "i2s_irq1";
-
-			dmas = <&dma2 1
-			        &dma3 1>;
-			dma-names = "i2s_play", "i2s_record";
-			dma-mask = <0xffffffff 0xffffffff>;
-		};
-		sound {
-			compatible = "loongson,ls-sound";
-			loongson,i2s-controller = <&i2s>;
-			loongson,audio-codec = <&audio>;
-			codec-names = "rt5651","rt5651 Duplex", "rt5651-aif1", "rt5651.3-001a";
-		};
-		nand@0x1fe06040{
+			nand@0x1fe06040{
 			#address-cells = <1>;
 			#size-cells = <1>;
 			compatible = "loongson,ls-nand";
@@ -601,8 +571,8 @@
 		};
 	};
 
-	chosen {
+//	chosen {
 		/* the redundant spaces are used for save new boot args */
-		bootargs = "console=ttyS0,115200 root=/dev/sda1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ";
-	};
+//		bootargs = "console=ttyS0,115200 root=/dev/sda1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ";
+//	};
 };

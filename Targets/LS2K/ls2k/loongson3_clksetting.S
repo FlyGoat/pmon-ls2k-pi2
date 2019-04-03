@@ -14,51 +14,25 @@ ATTENTION:
 
 
 #ifdef SOFT_CLKSEL
-#if 1
 /* MEM @ 500Mhz */
 /* GPU @ 400Mhz */
 //#define DDR_LOOPC  80
 #define DDR_REFC   4
 #define DDR_DIV    1
 #define DDR_DIV_L2    4
-#define GPU_DIV_L2    7
-#define HDA_DIV_L2    100
-#endif
-#if 0
-/* MEM @ 400Mhz */
-/* GPU @ 400Mhz */
-#define DDR_LOOPC  64
-#define DDR_REFC   4
-#define DDR_DIV    1
-#define DDR_DIV_L2    4
 #define GPU_DIV_L2    5
-#endif
-#ifndef DDR_FREQ
-#define DDR_FREQ 400
-#endif
 
-#ifndef CORE_FREQ
-#define CORE_FREQ   1000
-#endif
+#define PLL_IN 100000000
+//#define DDR_LOOPC 400000000/10*DDR_DIV*DDR_REFC*DDR_DIV_L2/(PLL_IN/10)
+#define DDR_LOOPC 384000000/10*DDR_DIV*DDR_REFC*DDR_DIV_L2/(PLL_IN/10)
 
-#define PLL_IN 100
-#define DDR_LOOPC DDR_FREQ*DDR_DIV*DDR_REFC*DDR_DIV_L2/PLL_IN
-#if 0
 /* CPU @ 1000Mhz */
 #define L1_LOOPC    80
 #define L1_REFC     4
 #define L1_DIV      1
 #define L2_DIV      2
-#endif
-#if 1
-/* CPU @ 800Mhz */
-#define L1_LOOPC    64
-#define L1_REFC     4
-#define L1_DIV      1
-#define L2_DIV      2
-#endif
 
-#define L1_LOOPC CORE_FREQ*L1_DIV*L1_REFC*L2_DIV/PLL_IN
+#define L1_LOOPC 800000000/10*L1_DIV*L1_REFC*L2_DIV/(PLL_IN/10)
 
 /* DC @ 200Mhz */
 /* GMAC @ 125Mhz */
@@ -125,7 +99,7 @@ ATTENTION:
 	li	t1, (0x1 << 19) 	//power down pll  first
 	sd	t1, 0x0(t0)
 	dli     t1, (DDR_DIV << 42) | (DDR_REFC << 26) | (DDR_LOOPC << 32) | (0x3 << 10) | (0x1 << 7)
-	dli	t2, (GPU_DIV_L2 << 22) | (DDR_DIV_L2) | (HDA_DIV_L2 << 44)
+	dli	t2, (GPU_DIV_L2 << 22) | (DDR_DIV_L2) | (64 <<44)
 	sd	t1, 0x0(t0)
 	sd	t2, 0x8(t0)
 	ori	t1, PLL_L1_ENA

@@ -215,6 +215,7 @@ int config_fb(unsigned long base, int mode)
 	outl((base + OF_PAN_CONFIG), 0x80001311);
 	outl((base + OF_PAN_TIMING), 0x00000000);
 
+	printf("base=0x%x\n", base);
 	outl((base + OF_HDISPLAY),
 		  (vgamode[mode].hfl << 16) | vgamode[mode].hr);
 	outl((base + OF_HSYNC),

@@ -472,6 +472,10 @@ cp0_main:
 	bal	beep_off//mtf
 	nop
 
+	bal	beep_on
+	nop
+
+
 	lui	t0, 0xba00
 	lui	t1, 0x1fe0
 	sw	t1, 0x1010(t0) /* config bar for APB */
@@ -480,6 +484,60 @@ cp0_main:
 	sw	t2, 0x1004(t0)
 
 
+	li	t0, 0xbfe10504
+	li	t1, 0
+	sw	t1, 0(t0)
+
+	li	a1, 0x80
+222:
+	li	t0, 0xbfe10514
+	li	t1, 0x0
+	sw	t1, 0(t0)
+
+	li	a0, 0xc
+1:
+	addiu	a0, -1
+	nop
+	bnez	a0, 1b
+	nop
+
+	li	t0, 0xbfe10514
+	li	t1, 0x80
+	sw	t1, 0(t0)
+
+	li	a0, 0xc
+1:
+	addiu	a0, -1
+	nop
+	bnez	a0, 1b
+	nop
+
+	li	t0, 0xbfe10514
+	li	t1, 0x0
+	sw	t1, 0(t0)
+
+	li	a0, 0xc
+1:
+	addiu	a0, -1
+	nop
+	bnez	a0, 1b
+	nop
+
+	li	t0, 0xbfe10514
+	li	t1, 0x80
+	sw	t1, 0(t0)
+
+	li	a0, 0xb
+1:
+	addiu	a0, -1
+	nop
+	bnez	a0, 1b
+	nop
+
+	addiu	a1, -1
+	nop
+	bnez	a1, 222b
+	nop
 
 /* mtf add for cfg pcie */
 	
@@ -521,7 +579,7 @@ cp0_main:
 	li      t1, 0x10000000
 	or	t0, t0, t1
 
-	dli	t1, 0xff204f
+	dli	t1, 0xff204c
         sw      t1, 0x0(t0)
   
 //pcie1 port1
@@ -540,7 +598,7 @@ cp0_main:
 	li      t1, 0x10100000
 	or	t0, t0, t1
 
-	dli	t1, 0xff204c
+	dli	t1, 0xff204f
         sw      t1, 0x0(t0)
   
 //pcie0 port0

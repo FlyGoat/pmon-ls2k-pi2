@@ -25,6 +25,7 @@ void config_sii9022a(void)
 	gpioi2c_read(dev_addr, 0x1c, &id1);
 	gpioi2c_read(dev_addr, 0x1d, &id2);
 
+	printf("id0=0x%x, id1=0x%x, id2=0x%x\n", id0, id1,id2);
 	if (id0 != 0xb0 || id1 != 0x2 || id2 != 0x3) {
 		printf("id err\n");
 		return;

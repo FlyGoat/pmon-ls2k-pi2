@@ -45,7 +45,7 @@ struct i2c_msg {
 #define LS2K_I2C_CR_REG     	0x4
 #define LS2K_I2C_SR_REG     	0x4
 
-#define ls2k_i2c_debug(fmt, args...)	//printf(fmt, ##args)
+#define ls2k_i2c_debug(fmt, args...)	printf(fmt, ##args)
 #define pr_info printf
 
 static void ls2k_i2c_stop(void)

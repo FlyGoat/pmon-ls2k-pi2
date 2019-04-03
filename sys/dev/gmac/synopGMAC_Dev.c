@@ -1148,6 +1148,8 @@ s32 synopGMAC_check_phy_init (synopGMACdevice * gmacdev)
 	s32 status = -ESYNOPGMACNOERR;		
 	s32 loop_count;
 	
+		synopGMAC_read_phy_reg(gmacdev->MacBase,gmacdev->PhyBase,0x3c, &data);
+		printf(" 3c data=0x%x\n", data);
 #if SYNOP_TOP_DEBUG
 	printf("in check phy init for mac %d !!!!!!\n");
 #endif
