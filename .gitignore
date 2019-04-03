@@ -57,9 +57,24 @@ gzrom*
 gzram*
 ./tags
 *_ok
+zloader/initmips.c
+zloader/ld.script
+zloader/pmon.bin.c
+zloader/pmon.bin.gz
+zloader/*.dtb
 Targets/*/conf/ld.script
+lib/libc/Makefile
+lib/libc/Makefile.bak
+lib/libz/Makefile
+lib/libz/Makefile.bak
+lib/libm/Makefile
+lib/libm/Makefile.bak
+
 
 # Patch related
 *.patch
 *.orig
 *.rej
+
+# IDE
+.vscode
