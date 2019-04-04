@@ -1,49 +1,38 @@
-/*whd : loongson3_clksetting.S
-	change the PLL settings of each core
+/* PLL Settings For Loongson-2K1000 */
 
-ATTENTION:
-
-         Using S1 for passing the NODE ID
-
-	PLL
-	40M > refclk/L1_div_ref >20M
-	3.2G > refclk/ L1_div_ref*L1_loopc > 1.2G
-	node_clock=refclk/L1_div_ref*L1_loopc/L1_divout/L2_divout
-*/
 #define SOFT_CLKSEL
-
+#ifdef SOFT_CLKSEL
 
 #ifndef DDR_FREQ
-#define DDR_FREQ   500   //this param must change with DDR freq together,ether soft or hard freq modified!!!
+/* Default MEM @ 400Mhz */
+#define DDR_FREQ   400
 #endif
-#ifdef SOFT_CLKSEL
-/* MEM @ 500Mhz */
-/* GPU @ 400Mhz */
-//#define DDR_LOOPC  80
-#define DDR_REFC   4
-#define DDR_DIV    1
-#define DDR_DIV_L2    4
-#define GPU_DIV_L2    5
 
-#define PLL_IN 100000000
-//#define DDR_LOOPC 400000000/10*DDR_DIV*DDR_REFC*DDR_DIV_L2/(PLL_IN/10)
-#define DDR_LOOPC 384000000/10*DDR_DIV*DDR_REFC*DDR_DIV_L2/(PLL_IN/10)
+#ifndef CORE_FREQ
+/* Default CPU @ 800Mhz */
+#define CORE_FREQ   800
+#endif
 
-/* CPU @ 1000Mhz */
-#define L1_LOOPC    80
 #define L1_REFC     4
 #define L1_DIV      1
 #define L2_DIV      2
+#define L1_LOOPC  (CORE_FREQ*L1_DIV*L2_DIV*L1_REFC/100)
 
-#define L1_LOOPC 800000000/10*L1_DIV*L1_REFC*L2_DIV/(PLL_IN/10)
 
-/* DC @ 200Mhz */
-/* GMAC @ 125Mhz */
-#define DC_LOOPC    80
+#define DDR_REFC   4
+#define DDR_DIV    1
+#define DDR_DIV_L2    4
+#define DDR_LOOPC  (DDR_FREQ*DDR_REFC*DDR_DIV*DDR_DIV_L2/100)
+/* GPU @ 400Mhz, HDA @ 24Mhz */
+#define GPU_DIV_L2    (400*DDR_REFC*DDR_DIV/DDR_LOOPC/100)
+#define HDA_DIV_L2    (24*DDR_REFC*DDR_DIV/DDR_LOOPC/100)
+
+/* DC @ 250Mhz, GMAC @ 125Mhz */
+#define DC_LOOPC    100
 #define DC_REFC     4
 #define DC_DIV      1
-#define DC_DIV_L2   8
-#define GMAC_DIV    16
+#define DC_DIV_L2   10
+#define GMAC_DIV    20
 
 #define PIX0_LOOPC	109
 #define PIX0_REFC	5
@@ -59,18 +48,16 @@ ATTENTION:
 #define BYPASS_L1   0x0
 
 #define PLL_CHANG_COMMIT 0x1
-/*
+
 #define BYPASS_REFIN 		(0x1 << 0)
-*/
+
 #define PLL_L1_LOCKED 		(0x1 << 16)
 #define PLL_L1_ENA		(0x1 << 2)
 
-#define PLL_MEM_ENA		(0x1 << 2)//chg
+#define PLL_MEM_ENA		(0x1 << 2)
 #define PLL_MEM_LOCKED 		(01 << 16)
 
-#define HT_HSEL			(0x1 << 15)
-
-	TTYDBG ("Soft CLK SEL adjust begin\r\n")
+	TTYDBG ("LS2K Soft CLK SEL adjust begin\r\n")
 
 	li     	t0, 0xbfe10480
 	li	t1, (0x1 << 19) 	//power down pll L1 first
@@ -82,11 +69,11 @@ ATTENTION:
 	ori	t1, PLL_L1_ENA
 	sd      t1, 0x0(t0)
 	
-11:
+wait_core_pll_lock:
 	ld      a0, 0x0(t0)
 	li      a1, PLL_L1_LOCKED
 	and     a0, a1, a0
-	beqz    a0, 11b //wait_locked_sys
+	beqz    a0, wait_core_pll_lock
 	nop
 
 	ld      a0, 0x0(t0)
@@ -102,17 +89,17 @@ ATTENTION:
 	li	t1, (0x1 << 19) 	//power down pll  first
 	sd	t1, 0x0(t0)
 	dli     t1, (DDR_DIV << 42) | (DDR_REFC << 26) | (DDR_LOOPC << 32) | (0x3 << 10) | (0x1 << 7)
-	dli	t2, (GPU_DIV_L2 << 22) | (DDR_DIV_L2) | (64 <<44)
+	dli	t2, (GPU_DIV_L2 << 22) | (DDR_DIV_L2) | (HDA_DIV_L2 << 44)
 	sd	t1, 0x0(t0)
 	sd	t2, 0x8(t0)
 	ori	t1, PLL_L1_ENA
 	sd      t1, 0x0(t0)
 
-21:
+wait_ddr_pll_lock:
 	lw      a0, 0x0(t0)
 	li      a1, PLL_MEM_LOCKED
 	and     a0, a0, a1
-	beqz    a0, 21b //wait_locked_ddr
+	beqz    a0, wait_ddr_pll_lock
 	nop
 
 	lw      a0, 0x0(t0)
@@ -134,11 +121,11 @@ ATTENTION:
 	ori	t1, PLL_L1_ENA
 	sd      t1, 0x0(t0)
 
-21:
+wait_dc_pll_lock:
 	lw      a0, 0x0(t0)
 	li      a1, PLL_MEM_LOCKED
 	and     a0, a0, a1
-	beqz    a0, 21b
+	beqz    a0, wait_dc_pll_lock
 	nop
 
 	lw      a0, 0x0(t0)
@@ -160,11 +147,11 @@ ATTENTION:
 	ori	t1, PLL_L1_ENA
 	sd      t1, 0x0(t0)
 
-21:
+wait_pix0_pll_lock:
 	lw      a0, 0x0(t0)
 	li      a1, PLL_MEM_LOCKED
 	and     a0, a0, a1
-	beqz    a0, 21b
+	beqz    a0, wait_pix0_pll_lock
 	nop
 
 	lw      a0, 0x0(t0)
@@ -186,11 +173,11 @@ ATTENTION:
 	ori	t1, PLL_L1_ENA
 	sd      t1, 0x0(t0)
 
-21:
+wait_pix1_pll_lock:
 	lw      a0, 0x0(t0)
 	li      a1, PLL_MEM_LOCKED
 	and     a0, a0, a1
-	beqz    a0, 21b
+	beqz    a0, wait_pix1_pll_lock
 	nop
 
 	lw      a0, 0x0(t0)
