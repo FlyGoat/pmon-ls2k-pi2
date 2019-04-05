@@ -69,6 +69,7 @@ lib/libz/Makefile
 lib/libz/Makefile.bak
 lib/libm/Makefile
 lib/libm/Makefile.bak
+zloader/flash.bin
 
 
 # Patch related

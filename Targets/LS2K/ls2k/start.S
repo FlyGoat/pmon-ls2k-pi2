@@ -838,7 +838,7 @@ start_now:
 #ifdef  AUTO_ARB_LEVEL
 //#define CHECK_ARB_LEVEL_FREQ
 #ifdef  AUTO_DDR_CONFIG
-#define CHECK_ARB_LEVEL_DIMM
+//#define CHECK_ARB_LEVEL_DIMM
 #endif
 //#define DEBUG_AUTO_ARB_LEVEL
 #endif

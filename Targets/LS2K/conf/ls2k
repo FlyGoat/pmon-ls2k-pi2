@@ -32,7 +32,7 @@ option		LS3_HT              # Enable the IO cache coherent for ls2k
 
 option      loongson3A3
 option      LSMC_2
-#option      ARB_LEVEL
+option      ARB_LEVEL
 option      DDR3_DIMM
 
 
@@ -329,7 +329,7 @@ option SEL_HDA
 #option CONFIG_VIDEO_LOGO
 #option CONFIG_VIDEO_BMP_LOGO
 option DDR_FREQ=400
-option CORE_FREQ=800
+option CORE_FREQ=1000
 option	LCD_EN
 select	SEL_CAN
 select GPIO36_RESET_PHY
