@@ -212,105 +212,6 @@
 			interrupts = <8>;
 		};
 
-		serial1x@0x1fe00100{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00100 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <8>;
-		};
-
-		serial2x@0x1fe00200{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00200 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <8>;
-		};
-
-		serial3x@0x1fe00300{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00300 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <8>;
-		};
-
-		serial4x@0x1fe00400{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00400 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <9>;
-		};
-
-		serial5x@0x1fe00500{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00500 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <9>;
-		};
-
-		serial6x@0x1fe00600{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00600 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <9>;
-		};
-
-		serial7x@0x1fe00700{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00700 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <9>;
-		};
-
-		serial8x@0x1fe00800{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00800 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <10>;
-		};
-
-		serial9x@0x1fe00900{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00900 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <10>;
-		};
-
-		serialax@0x1fe00a00{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00a00 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <10>;
-		};
-
-		serialbx@0x1fe00b00{
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x1fe00b00 0x100>;
-			clock-frequency = <125000000>;
-			interrupt-parent = <&icu>;
-			interrupts = <10>;
-		};
-
 		pioA:gpio@0x1fe10500{
 			compatible = "ls,ls2k-gpio", "ls,ls-gpio";
 			reg = <0x1fe10500 0x38>;
@@ -326,7 +227,6 @@
 			interrupts = <30>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-
 				touchscreen@14{
 				compatible = "loongson,Goodix-TS";
 				reg = <0x14>;
@@ -341,10 +241,6 @@
 			reg = <0x1fe01800 0x8>;
 			interrupt-parent = <&icu>;
 			interrupts = <31>;
-			rtc@68{
-				compatible = "dallas,ds1338";
-				reg = <0x68>;
-			};
 			codec@1a{
 				compatible = "codec_uda1342";
 				reg = <0x1a>;
@@ -358,57 +254,11 @@
 		};
 
 
-/*		i2c_dvo1:i2c@3{
-			compatible = "i2c-gpio";
-			gpios = <&pioA 32 0 
-				 &pioA 33 0 
-				>;*/
-			/*i2c-gpio,sda-open-drain;*/
-			/*i2c-gpio,scl-open-drain;*/
-/*			i2c-gpio,delay-us = <5>;*/	/* ~100 kHz */
-/*			eeprom@50{
-				compatible = "eeprom-edid";
-				reg = <0x50>;
-			};
-			codec@1a{
-				compatible = "realtek,rt5651";
-				reg = <0x1a>;
-			};
-		};
-*/
-
 		spi0: spi@1fff0220{
 			compatible = "loongson,ls-spi";
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x1fff0220 0x6>;
-			spidev@3{
-				compatible = "rohm,dh2228fv";
-				spi-max-frequency = <100000000>;
-				reg = <3>;
-			};
-			spidev@0{
-				compatible = "m25p80";
-				spi-max-frequency = <40000000>;
-				reg = <0>;
-			};
-			spidev@1{
-				compatible = "mt29f";
-				spi-max-frequency = <20000000>;
-				reg = <1>;
-
-			number-of-parts = <0x2>;
-
-			partition@0 {
-				label = "kernel_partition";
-				reg = <0x0000000 0x01e00000>;
-			};
-
-			partition@0x01400000 {
-				label = "os_partition";
-				reg = <0x01e00000 0x0>;
-			};
-			};
 		};
 
 		rtc0: rtc@1fe07800{
@@ -514,7 +364,6 @@
 			dma-channels = <1>;
 			dma-requests = <1>;
 		};
-		/*
 		dma4: dma@1fe10c40 {
 			compatible = "loongson,ls-apbdma-4";
 			apbdma-sel = <&apbdma 0x0 0x0>;
@@ -523,47 +372,7 @@
 			dma-channels = <1>;
 			dma-requests = <1>;
 		};
-		*/
-		sdio@0x1fe0c000 {
-			#address-cells = <1>;
-			#size-cells = <1>;
 
-			compatible = "loongson,ls2k_sdio";
-			reg = <0x1fe0c000 0x1000>;
-			interrupt-parent = <&icu>;
-			interrupts = <39>;
-			interrupt-names = "ls2k_mci_irq";
-
-			dmas = <&dma1 1>;
-			dma-names = "sdio_rw";
-			dma-mask = <0xffffffff 0xffffffff>;
-		};
-			nand@0x1fe06040{
-			#address-cells = <1>;
-			#size-cells = <1>;
-			compatible = "loongson,ls-nand";
-			reg = <0x1fe06040 0x0
-				0x1fe06000 0x20>;
-			interrupt-parent = <&icu>;
-			interrupts = <52>;
-			interrupt-names = "nand_irq";
-
-			dmas = <&dma0 1>;
-			dma-names = "nand_rw";
-			dma-mask = <0xffffffff 0xffffffff>;
-
-			number-of-parts = <0x2>;
-
-			partition@0 {
-				label = "kernel_partition";
-				reg = <0x0000000 0x01e00000>;
-			};
-
-			partition@0x01400000 {
-				label = "os_partition";
-				reg = <0x01e00000 0x0>;
-			};
-		};
 		hwmon@0x1fe07000{
 			#address-cells = <1>;
 			#size-cells = <1>;
