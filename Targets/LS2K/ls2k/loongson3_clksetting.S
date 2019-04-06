@@ -19,14 +19,17 @@
 #define L1_LOOPC  (CORE_FREQ*L1_DIV*L2_DIV*L1_REFC/100)
 
 
+#if DDR_FREQ == 400
 #define DDR_REFC   4
 #define DDR_DIV    1
-#define DDR_DIV_L2    4
-#define DDR_LOOPC  (DDR_FREQ*DDR_REFC*DDR_DIV*DDR_DIV_L2/100)
+#define DDR_DIV_L2    6
+#define DDR_LOOPC  96
 /* GPU @ 400Mhz, HDA @ 24Mhz */
-#define GPU_DIV_L2    (400*DDR_REFC*DDR_DIV/DDR_LOOPC/100)
-#define HDA_DIV_L2    (24*DDR_REFC*DDR_DIV/DDR_LOOPC/100)
-
+#define GPU_DIV_L2    6
+#define HDA_DIV_L2    100
+#else
+#error Please define your DDR PLL 
+#endif
 /* DC @ 250Mhz, GMAC @ 125Mhz */
 #define DC_LOOPC    100
 #define DC_REFC     4
