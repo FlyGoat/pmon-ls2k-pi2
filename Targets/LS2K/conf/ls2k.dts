@@ -227,11 +227,11 @@
 			interrupts = <30>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-				touchscreen@14{
-				compatible = "loongson,Goodix-TS";
-				reg = <0x14>;
+		eeprom@0a {
+			compatible = "24c02";
+			reg = <0xa0>;
+			pagesize = <8>;
 			};
-
 		};
 		i2c1: i2c@1fe01800{
 			#address-cells = <1>;
@@ -241,10 +241,6 @@
 			reg = <0x1fe01800 0x8>;
 			interrupt-parent = <&icu>;
 			interrupts = <31>;
-			codec@1a{
-				compatible = "codec_uda1342";
-				reg = <0x1a>;
-			};
 			eeprom@50{
 				compatible = "eeprom-edid";
 				reg = <0x50>;
