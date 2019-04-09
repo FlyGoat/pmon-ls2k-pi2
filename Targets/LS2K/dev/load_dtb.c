@@ -41,11 +41,12 @@ static int check_mac_ok(void)
 	int  nodeoffset;	/* node offset from libfdt */
 	int  len, id, i;		/* length of the property */
 	u8 mac_addr[6] = {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF7};	//default mac address
-	char ethernet_name[2][25]={"/soc/ethernet@0x40000000", "/soc/ethernet@0x40010000"};
+	char ethernet_name[2][25]={"/soc/ethernet@0x40040000", "/soc/ethernet@0x40050000"};
 
 	for(id = 0;id < 2;id++) {
 		nodeoffset = fdt_path_offset (working_fdt, ethernet_name[id]);
 		if (nodeoffset < 0) {
+			printf("load-dtb: Can't find GMAC node\n");
 			return 1;	//no ethernet device, do nothing
 		}
 		nodep = fdt_getprop (working_fdt, nodeoffset, (const char* )"mac-address", &len);
@@ -216,7 +217,7 @@ static int update_mac(void * ssp, int id)
 	int nodeoffset, len;
 	void *nodep;	/* property node pointer */
 	u8 mac_addr[6] = {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF7};	//default mac address
-	char ethernet_name[2][25]={"/soc/ethernet@0x40000000", "/soc/ethernet@0x40010000"};
+	char ethernet_name[2][25]={"/soc/ethernet@0x40040000", "/soc/ethernet@0x40050000"};
 
 	nodeoffset = fdt_path_offset (ssp, ethernet_name[id]);
 	if (nodeoffset < 0) {

@@ -1,5 +1,5 @@
  /*
-  * This file is for CAT24C16 eeprom.
+  * This file is for Generic EEPROM.
   * Author: Liu Shaozong
   */
 #include <sys/linux/types.h>
@@ -12,7 +12,9 @@
 
 #include "generate_mac_val.c"
 
-#define	CAT24C16_ADDR	0xae
+#ifndef I2C_EEPROM_ADDR
+#define	I2C_EEPROM_ADDR	0xa0
+#endif
 
 #define PRER_LO_REG	0x0
 #define PRER_HI_REG	0x1
@@ -50,7 +52,7 @@ static int i2c_tx_byte(unsigned char data, unsigned char opt)
 	while (ee_inb(SR_REG) & SR_TIP) ;
 
 	if (ee_inb(SR_REG) & SR_NOACK) {
-		printf("Eeprom has no ack, Pls check the hardware!\n");
+		printf("EEPROM has no ack, Please check the hardware!\n");
 		ls2k_i2c_stop();
 		return -1;
 	}
@@ -60,7 +62,7 @@ static int i2c_tx_byte(unsigned char data, unsigned char opt)
 
 static int i2c_send_addr(unsigned char data_addr)
 {
-	unsigned char ee_dev_addr = CAT24C16_ADDR;
+	unsigned char ee_dev_addr = I2C_EEPROM_ADDR;
 
 	if (i2c_tx_byte(ee_dev_addr, CR_START | CR_WRITE) < 0)
 		return 0;
@@ -129,7 +131,7 @@ int ls2k_eeprom_write_page(unsigned char data_addr, unsigned char *buf, int coun
   **/
 int ls2k_eeprom_read_cur(unsigned char *buf)
 {
-	unsigned char ee_dev_addr = CAT24C16_ADDR | 0x1;
+	unsigned char ee_dev_addr = I2C_EEPROM_ADDR | 0x1;
   
 	if (i2c_tx_byte(ee_dev_addr, CR_START | CR_WRITE) < 0)
 		return 0;
@@ -178,7 +180,7 @@ int ls2k_eeprom_read_rand(unsigned char data_addr, unsigned char *buf)
 static int i2c_read_seq_cur(unsigned char *buf, int count)
 {
 	int i;
-	unsigned char ee_dev_addr = CAT24C16_ADDR |  0x1;
+	unsigned char ee_dev_addr = I2C_EEPROM_ADDR |  0x1;
 
 	if (i2c_tx_byte(ee_dev_addr, CR_START | CR_WRITE) < 0)
 		return 0;
