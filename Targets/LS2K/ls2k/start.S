@@ -205,7 +205,7 @@ stack = start - 0x4000		/* Place PMON stack below PMON start in RAM */
 	nop
 
 	/* init processor state at first*/
-/* NOTE!! Not more that 16 instructions here!!! Right now it's FULL! */
+/* NOTE!! Not more that 16 instructions here!!! Right now its FULL! */
 	mtc0	zero, COP_0_STATUS_REG //cuckoo
 	mtc0	zero, COP_0_CAUSE_REG
 	li	t0, SR_BOOT_EXC_VEC	/* Exception to Boostrap Location */
@@ -785,6 +785,14 @@ cp0_main:
 2:
 
 #if 1 /* Config SATA : use internel clock */
+	li	    t0, 0xbfe10000
+
+    li      t1, 0x30c31cf9
+    sw      t1, 0x454(t0)
+    li      t1, 0xf300040f
+    sw      t1, 0x450(t0)
+
+#if 1
 	PRINTSTR("\r\nUSE internel SATA ref clock\r\n")
 	li	t1, 0xbfe10450
 	ld	a0, 0x0(t1)
@@ -795,16 +803,92 @@ cp0_main:
 	sync
 
 	ld	a0, 0x0(t1)
+	li	a1, 0x4
+    or  a0, a1
+	sd	a0, 0x0(t1)
+	sync
+
+	ld	a0, 0x0(t1)
+	li	a1, 0x8
+    or  a0, a1
+	sd	a0, 0x0(t1)
+	sync
+
+	ld	a0, 0x0(t1)
 	bal	hexserial64
 	nop
+#endif
 
+#if 0
+    li      t0, 0xbfe10000
+
+    //assert p0 reset
+    lw      t1, 0x450(t0)
+    li      t2, (1 << 3)
+    not     t2, t2
+    and     t1, t1, t2
+    sw      t1, 0x450(t0)
+
+    //assert phy reset
+    lw      t1, 0x450(t0)
+    li      t2, (1 << 2)
+    not     t2, t2
+    and     t1, t1, t2
+    sw      t1, 0x450(t0)
+
+    //power down phy
+    lw      t1, 0x454(t0)
+    li      t2, (1 << 31)
+    or      t1, t1, t2
+    sw      t1, 0x454(t0)
+
+    //switch refclk
+    lw      t1, 0x450(t0)
+    li      t2, (1 << 1)
+    not     t2, t2
+    and     t1, t1, t2
+    sw      t1, 0x450(t0)
+
+    //delay a while
+    li      t1, 0x1000
+1:
+    subu    t1, t1, 1
+    bnez    t1, 1b
+    nop
+
+
+    //power up phy
+    lw      t1, 0x454(t0)
+    li      t2, (1 << 31)
+    not     t2, t2
+    and     t1, t1, t2
+    sw      t1, 0x454(t0)
+
+    //deassert phy reset
+    lw      t1, 0x450(t0)
+    li      t2, (1 << 2)
+    or      t1, t1, t2
+    sw      t1, 0x450(t0)
 	
+    //deassert p0 reset
+    lw      t1, 0x450(t0)
+    li      t2, (1 << 3)
+    or      t1, t1, t2
+    sw      t1, 0x450(t0)
+
+    //delay a while
+    li      t1, 0x10000
+1:
+    subu    t1, t1, 1
+    bnez    t1, 1b
+    nop
+#endif
 #endif
 
 #if 1 /* Config SATA TX signal*/
-        li      t0, 0xbfe10458
-        dli     t1, 0x1403f1002
-        sd      t1, 0x0(t0)
+    li      t0, 0xbfe10458
+    dli     t1, 0x1403f1002
+    sd      t1, 0x0(t0)
 #endif
 
 
