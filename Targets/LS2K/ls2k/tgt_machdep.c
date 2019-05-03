@@ -1919,7 +1919,6 @@ void ls_pcie_config_set(void)
 			//ls_pcie_busnr_fixup(pci_config_array + i);
 			ls_pcie_payload_fixup(pci_config_array + i);
 	}
-	internal_dma_window_config();
 	ls_pci_msi_window_config();
 
 	if(!ls2k_version())
@@ -1927,8 +1926,7 @@ void ls_pcie_config_set(void)
 	else
 	{
 		/*set dc coherent*/
-		*(volatile int *)0xbfe10430 |= (1 << 3); 
-		*(volatile int *)0xbfe10430 |= (1 << 2); 
+		*(volatile int *)0xbfe10430 |= 8; 
 		map_gpu_addr();
 	}
 }
@@ -1939,17 +1937,14 @@ void map_gpu_addr(void)
     flushcache();
 
 	if (memorysize_total == 0x800) {
-		/* Cached */
 		__raw__writeq(0x900000001fe10038 , 0x20000000);
 		__raw__writeq(0x900000001fe10078 , 0xffffffffe0000000);
 		__raw__writeq(0x900000001fe100b8 , 0x00000000600000f0);
 	} else if (memorysize_total == 0x1000) {
-		/* Cached */
 		__raw__writeq(0x900000001fe10038 , 0x20000000);
 		__raw__writeq(0x900000001fe10078 , 0xffffffffe0000000);
 		__raw__writeq(0x900000001fe100b8 , 0x00000000e00000f0);
 	} else if (memorysize_total == 0x2000) {
-		/* Cached */
 		__raw__writeq(0x900000001fe10038 , 0x20000000);
 		__raw__writeq(0x900000001fe10078 , 0xffffffffe0000000);
 		__raw__writeq(0x900000001fe100b8 , 0x00000001e00000f0);
@@ -1997,70 +1992,10 @@ void ls_set_io_noncoherent(void)
 
 void ls_pci_msi_window_config(void)
 {
-	/* WIN0 Uncached / Cached Low I/O -> Uncached I/O Interconnect Network  */
-	/* Including Boot I/O, PCIe config, io, but PCIe should never DMA this region right? */
-	/* Where is DSI of dwc_pcie placed on?  Interconnect?  */
-	/* Why don't we map it to L1? For better performance? */
-	__raw__writeq(0x900000001fe12500 , 0x0000000010000000ULL);
-	__raw__writeq(0x900000001fe12540 , 0xfffffffff0000000ULL);
-	__raw__writeq(0x900000001fe12580 , 0x00000000100000A1ULL);
-
-}
-
-void internal_dma_window_config(void)
-{
-	int i;
-	u64 val;
-
-	/* Internal DMA is a AXI Bus with extend properties */
-	/* Hardware is listening L1 Crossbar to maintain cache coherency*/
-	/* We should map all the requst to L1 in order to maintain I/O coherency */
-	/* How do we determine a cached request? By guess? */
-	#if 0 /* It seems ok but will cause coherent issue, any idea? */
-	/* WIN0 Uncached Low I/O -> L1 */
-	__raw__writeq(0x900000001fe12400 , 0x0000000010000000ULL);
-	__raw__writeq(0x900000001fe12440 , 0xfffffffff0000000ULL);
-	__raw__writeq(0x900000001fe12480 , 0x0000000010000080ULL);
-	/* WIN1 Uncached Low PCI MEM -> L1 */
-	__raw__writeq(0x900000001fe12408 , 0x0000000040000000ULL);
-	__raw__writeq(0x900000001fe12448 , 0xffffffffb0000000ULL);
-	__raw__writeq(0x900000001fe12488 , 0x0000000040000080ULL);
-	/* WIN2 Uncached High PCI MEM -> L1*/
-	__raw__writeq(0x900000001fe12410 , 0x0000004000000000ULL);
-	__raw__writeq(0x900000001fe12450 , 0xfffffff000000000ULL);
-	__raw__writeq(0x900000001fe12490 , 0x0000004000000080ULL);
-	/* WIN3 Uncached High PCI I/O -> L1 */
-	__raw__writeq(0x900000001fe12418 , 0x000000fdfc000000ULL);
-	__raw__writeq(0x900000001fe12458 , 0xfffffffff3000000ULL);
-	__raw__writeq(0x900000001fe12498 , 0x000000fdfc000080ULL);
-	/* WIN4 Uncached High PCI MEM -> L1*/
-	__raw__writeq(0x900000001fe12420 , 0x000000fe00000000ULL);
-	__raw__writeq(0x900000001fe12460 , 0xffffffff00000000ULL);
-	__raw__writeq(0x900000001fe124a0 , 0x000000fe00000080ULL);
-	/* WIN5 Uncached Rest -> Uncached IO in L1 */
-	__raw__writeq(0x900000001fe12428 , 0x0000000000000000ULL);
-	__raw__writeq(0x900000001fe12468 , 0x0000000000000000ULL); /* 40bit phy*/
-	__raw__writeq(0x900000001fe124a8 , 0x0000000000000080ULL);
-	/* WIN6 Cached Rest -> L1 */
-	__raw__writeq(0x900000001fe12430 , 0x0000000000000000ULL);
-	__raw__writeq(0x900000001fe12470 , 0x0000000000000000ULL);
-	__raw__writeq(0x900000001fe124b0 , 0x00000000000000e0ULL);
-	#endif
-
-	/* Copy CPU WINs to Uncached IO WINs, Don't know if it's compeleted in assembly stage*/
-	for(i = 0; i < 8; i++){
-		/* BASEs */
-		val = __raw__readq(0x900000001fe10000 + 0x8 * i);
-		__raw__writeq(0x900000001fe10100 + 0x8 * i, val);
-		/* MASKs */
-		val = __raw__readq(0x900000001fe10040 + 0x8 * i);
-		__raw__writeq(0x900000001fe10140 + 0x8 * i, val);
-		/* MMAPSs */
-		val = __raw__readq(0x900000001fe10080 + 0x8 * i);
-		__raw__writeq(0x900000001fe10180 + 0x8 * i, val);
-
-	} 
-
+	/*config msi window*/
+	__raw__writeq(0x900000001fe12500 , 0x000000001fe10000ULL);
+	__raw__writeq(0x900000001fe12540 , 0xffffffffffff0000ULL);
+	__raw__writeq(0x900000001fe12580 , 0x000000001fe10081ULL);
 }
 
 
