@@ -62,8 +62,8 @@
 #define EJTAG_WATCHHI	0xff2001a8 	
 #define EJTAG_XCONTEXT  0xff2001b0 	
 #define EJTAG_DEPC		0xff2001b8 	
-#define EJTAG_ERROREPC  0xff2001c0 	
-#define EJTAG_DESAVE	0xff2001c8 	
+#define EJTAG_ERROREPC  0xff2001c0
+#define EJTAG_DESAVE	0xff2001c8
 
 #define DUMPREGS_START  EJTAG_V0
 #define DUMPREGS_END    EJTAG_DESAVE
@@ -225,7 +225,7 @@ tlbdump_end:
 	//dmtc0	t2,CP0_DEXC_PC
 	dmtc0	t2, CP0_DEPC
 
-/* should avoid this because C client doesn't support */
+/* should avoid this because C client doesnt support */
 ##ifdef DEBUG
 #	li		t0, DBGREG
 #	sw		t2, 0x0(t0)

@@ -150,8 +150,9 @@ void ls2k_i2c_init(int speed,  int slaveaddr)
 	if(slaveaddr)
 		LS2K_I2C_BASE = slaveaddr;
         ls2k_i2c_writeb(0, LS2K_I2C_CTR_REG);
-        ls2k_i2c_writeb(0x64, LS2K_I2C_PRER_LO_REG);
-        ls2k_i2c_writeb(0x4, LS2K_I2C_PRER_HI_REG);
+				/* According to the manual, nearest with 100khz */
+        ls2k_i2c_writeb(0x38, LS2K_I2C_PRER_LO_REG);
+        ls2k_i2c_writeb(0x1, LS2K_I2C_PRER_HI_REG);
         ls2k_i2c_writeb(0x80, LS2K_I2C_CTR_REG);
 }
 
