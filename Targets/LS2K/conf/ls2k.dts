@@ -227,12 +227,8 @@
 			interrupts = <30>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-		eeprom@0a {
-			compatible = "24c02";
-			reg = <0xa0>;
-			pagesize = <8>;
-			};
 		};
+	
 		i2c1: i2c@1fe01800{
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -246,9 +242,7 @@
 				reg = <0x50>;
 			};
 
-
 		};
-
 
 		spi0: spi@1fff0220{
 			compatible = "loongson,ls-spi";
