@@ -1,4 +1,5 @@
 #!/bin/bash
+LANG=C
 FILEIN=gzrom-dtb.bin
 FILEOUT=flash.bin
 TARGET_SIZE=1048576
@@ -7,4 +8,4 @@ val=`expr $TARGET_SIZE - $FILESIZE`
 echo $TARGET_SIZE
 echo $FILESIZE
 cp $FILEIN $FILEOUT
-dd if=/dev/zero bs=1 count=$val >> $FILEOUT
+dd if=<(yes $'\xFF' | tr -d "\n") bs=1 count=$val >> $FILEOUT
